@@ -12,11 +12,27 @@ namespace RB10.Tools.ExcelBookCombination
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            if(0 < args.Length && args[0].ToLower() == "/s")
+            {
+                Execute();
+            }
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new FolderSelectForm());
+            }
+        }
+
+        static void Execute()
+        {
+            foreach (var folder in System.IO.Directory.GetDirectories(Properties.Settings.Default.TargetFolder))
+            {
+                var bc = new BookCombination(folder, Properties.Settings.Default.OutputParentFolder);
+                bc.Run();
+            }
         }
     }
 }
